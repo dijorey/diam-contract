@@ -3,12 +3,12 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract Diam is Ownable, ERC20Permit {
-    using SafeMath for uint256;
+    using ECDSA for bytes32;
 
-    uint256 public ownerNounce;
+    uint256 public ownerNonce;
 
     constructor() ERC20("DIAM", "DIAM") ERC20Permit("DIAM") {}
 
@@ -30,7 +30,7 @@ contract Diam is Ownable, ERC20Permit {
                 abi.encodePacked(
                     msg.sender,
                     amount,
-                    ownerNounce,
+                    ownerNonce,
                     block.chainid,
                     deadline,
                     address(this)
@@ -46,7 +46,7 @@ contract Diam is Ownable, ERC20Permit {
                     abi.encodePacked(
                         msg.sender,
                         amount,
-                        ownerNounce,
+                        ownerNonce,
                         block.chainid,
                         deadline,
                         address(this)
@@ -59,7 +59,7 @@ contract Diam is Ownable, ERC20Permit {
 
         require(signer == owner(), "DW02");
 
-        ownerNounce++;
+        ownerNonce++;
 
         _mint(_msgSender(), amount);
     }
